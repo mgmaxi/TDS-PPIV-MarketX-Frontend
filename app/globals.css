@@ -1,26 +1,117 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --radius: 0.75rem;
+  }
+
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+.bg-gradient-hero {
+  background: linear-gradient(
+    135deg,
+    hsl(217 91% 60%) 0%,
+    hsl(230 80% 65%) 40%,
+    hsl(25 95% 53%) 100%
+  );
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
+
+.bg-gradient-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMTBoNjB2MTBIMFYxMHoiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9zdmc+") repeat;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+}
+
+
+.btn-primary {
+  @apply bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] font-semibold px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-out;
+}
+.btn-primary:hover {
+  @apply shadow-xl scale-[1.03];
+}
+
+.btn-outline {
+  @apply border border-[hsl(var(--accent))] text-[hsl(var(--accent))] font-semibold px-6 py-3 rounded-lg transition-all duration-300 ease-out;
+}
+.btn-outline:hover {
+  @apply bg-[hsl(var(--accent))/0.1] scale-[1.02];
+}
+
+
+.card {
+  @apply rounded-xl bg-[hsl(var(--background))] shadow-sm hover:shadow-lg hover:scale-[1.03] transition-all duration-300 ease-out;
+}
+
+
+.shadow-soft {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+.card {
+  @apply relative rounded-xl border border-[hsl(var(--border))] bg-white shadow-sm transition-all duration-300 ease-out;
+  background: linear-gradient(to bottom right, #ffffff, #f9fbff);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  border-radius: 1rem;
+  background: linear-gradient(
+    to bottom,
+    hsla(217, 91%, 60%, 0.25),
+    transparent
+  );
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  @apply shadow-lg scale-[1.02];
+}
+
+.card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
