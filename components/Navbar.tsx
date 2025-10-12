@@ -21,25 +21,25 @@ export default function Navbar() {
               href="/"
               className="text-sm font-medium text-foreground hover:text-primary transition"
             >
-              Home
+              Inicio
             </Link>
             <Link
               href="/about"
               className="text-sm font-medium text-foreground hover:text-primary transition"
             >
-              About
+              Sobre nosotros
             </Link>
             <Link
               href="/seller"
               className="text-sm font-medium text-foreground hover:text-primary transition"
             >
-              For Sellers
+              Vendedores
             </Link>
             <Link
               href="/pricing"
               className="text-sm font-medium text-foreground hover:text-primary transition"
             >
-              Pricing
+              Buscar
             </Link>
           </div>
 

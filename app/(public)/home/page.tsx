@@ -1,7 +1,7 @@
 "use client";
 
-import ProductCarousel from "@/components/ProductCarousel";
-import RecommendedCarousel from "@/components/RecommendedCarousel";
+import ProductCarousel from "../../../components/ProductCarousel"
+import RecommendedCarousel from "../../../components/RecommendedCarousel";
 import Navbar from "@/components/Navbar";
 
 export default function HomePage() {
