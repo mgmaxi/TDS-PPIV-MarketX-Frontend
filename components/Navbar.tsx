@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Menu } from "lucide-react";
+import SearchBar from "@/components/SearchBar";
 
 export default function Navbar() {
   return (
@@ -15,43 +16,36 @@ export default function Navbar() {
             <span className="text-xl font-bold text-foreground">MarketX</span>
           </div>
 
-          {/* Links principales */}
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium text-foreground hover:text-primary transition"
-            >
-              Inicio
+          {/* Enlaces principales + Buscador */}
+          <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            <Link href="/catalog" className="text-sm font-medium text-foreground hover:text-primary transition">
+              Categorías
             </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-foreground hover:text-primary transition"
-            >
+            <Link href="/sale" className="text-sm font-medium text-foreground hover:text-primary transition">
+              Ofertas
+            </Link>
+            <Link href="/technologie" className="text-sm font-medium text-foreground hover:text-primary transition">
+              Tecnología
+            </Link>
+            <Link href="/about" className="text-sm font-medium text-foreground hover:text-primary transition">
               Sobre nosotros
             </Link>
-            <Link
-              href="/seller"
-              className="text-sm font-medium text-foreground hover:text-primary transition"
-            >
-              Vendedores
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm font-medium text-foreground hover:text-primary transition"
-            >
-              Buscar
-            </Link>
+
+            {/* Buscador */}
+            <div className="ml-6">
+              <SearchBar />
+            </div>
           </div>
 
           {/* Botones */}
           <div className="flex items-center gap-4">
             <Link href="/signin">
-              <Button variant="ghost" className="btn-primary">
+              <Button variant="ghost" className="text-sm font-medium hover:text-primary">
                 Iniciar sesión
               </Button>
             </Link>
             <Link href="/signup">
-              <Button className="btn-outline-secondary">
+              <Button className="btn-primary text-sm px-4 py-2 rounded-full">
                 Registrarse
               </Button>
             </Link>
