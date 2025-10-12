@@ -127,7 +127,7 @@ export default function RecommendedCarousel() {
       className="w-full my-10 relative"
     >
       <h2 className="text-2xl font-bold mb-6 text-foreground">
-        Recomendados para ti
+        Recomendados
       </h2>
 
       <div className="relative">
