@@ -40,7 +40,7 @@ export default function Navbar() {
           {/* Botones */}
           <div className="flex items-center gap-4">
             <Link href="/signin">
-              <Button variant="ghost" className="text-sm font-medium hover:text-primary">
+              <Button variant="ghost" className="text-sm font-medium hover:bg-[#4499FF] transition">
                 Iniciar sesión
               </Button>
             </Link>
