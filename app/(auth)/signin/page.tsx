@@ -14,6 +14,7 @@ export default function SignInPage() {
     e.preventDefault();
     
     if (username === "admin" && password === "1234") {
+      localStorage.setItem("user", JSON.stringify({ username: "ejemplo" }));
       router.push("/");
     } else {
       alert("Credenciales incorrectas");
