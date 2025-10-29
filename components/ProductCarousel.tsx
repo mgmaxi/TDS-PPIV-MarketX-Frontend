@@ -4,13 +4,15 @@ import Slider from "react-slick";
 import ProductCard from "./ProductCard";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Íconos de flechas
 
-const mockProducts = [
+export const mockProducts = [
   {
     id: 1,
     name: "Auriculares Bluetooth Sony WH-1000XM5",
     price: 420,
     image: "https://images.pexels.com/photos/3394651/pexels-photo-3394651.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "SoundPro",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 2,
@@ -18,6 +20,8 @@ const mockProducts = [
     price: 1100,
     image: "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "MobileCenter",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 3,
@@ -25,6 +29,8 @@ const mockProducts = [
     price: 160,
     image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "UrbanStyle",
+    category: "Textil",
+    active: true,
   },
   {
     id: 4,
@@ -32,6 +38,8 @@ const mockProducts = [
     price: 530,
     image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "TimeStore",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 5,
@@ -39,6 +47,8 @@ const mockProducts = [
     price: 950,
     image: "https://images.pexels.com/photos/212372/pexels-photo-212372.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "FotoPro",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 6,
@@ -46,6 +56,8 @@ const mockProducts = [
     price: 120,
     image: "https://images.pexels.com/photos/585754/pexels-photo-585754.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "HomeCafe",
+    category: "Hogar",
+    active: true,
   },
   {
     id: 7,
@@ -53,6 +65,8 @@ const mockProducts = [
     price: 95,
     image: "https://images.pexels.com/photos/442956/pexels-photo-442956.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "AdventureGear",
+    category: "Textil",
+    active: true,
   },
   {
     id: 8,
@@ -60,6 +74,8 @@ const mockProducts = [
     price: 45,
     image: "https://images.pexels.com/photos/8092352/pexels-photo-8092352.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "DecoLight",
+    category: "Hogar",
+    active: true,
   },
   {
     id: 9,
@@ -67,6 +83,8 @@ const mockProducts = [
     price: 150,
     image: "https://images.pexels.com/photos/3829227/pexels-photo-3829227.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "TechZone",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 10,
@@ -74,6 +92,8 @@ const mockProducts = [
     price: 25,
     image: "https://images.pexels.com/photos/3737696/pexels-photo-3737696.jpeg?auto=compress&cs=tinysrgb&w=600",
     seller: "EcoLife",
+    category: "Tecnología",
+    active: true,
   },
 ];
 

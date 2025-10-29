@@ -7,13 +7,15 @@ import { Product } from "@/types/products";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Datos de productos
-const products: Product[] = [
+export const products: Product[] = [
   {
     id: 101,
     name: "Notebook Apple MacBook Air M3",
     price: 1450,
     image: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=800",
     seller: "TechWorld",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 102,
@@ -21,6 +23,8 @@ const products: Product[] = [
     price: 980,
     image: "https://images.pexels.com/photos/845434/pexels-photo-845434.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "VisionTech",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 103,
@@ -28,6 +32,8 @@ const products: Product[] = [
     price: 380,
     image: "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "SoundPro",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 104,
@@ -35,13 +41,17 @@ const products: Product[] = [
     price: 175,
     image: "https://images.pexels.com/photos/2529147/pexels-photo-2529147.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "UrbanStyle",
+    category: "Textil",
+    active: true,
   },
   {
     id: 105,
     name: "Cámara mirrorless Sony Alpha 7 IV",
     price: 2100,
-    image: "https://images.pexels.com/photos/1631182/pexels-photo-1631182.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "https://images.pexels.com/photos/20128900/pexels-photo-20128900.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "FotoPro",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 106,
@@ -49,6 +59,8 @@ const products: Product[] = [
     price: 690,
     image: "https://images.pexels.com/photos/277394/pexels-photo-277394.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "TimeStore",
+    category: "Tecnología",
+    active: true,
   },
   {
     id: 107,
@@ -56,6 +68,8 @@ const products: Product[] = [
     price: 890,
     image: "https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "HomeDeco",
+    category: "Hogar",
+    active: true,
   },
   {
     id: 108,
@@ -63,6 +77,8 @@ const products: Product[] = [
     price: 1250,
     image: "https://images.pexels.com/photos/276517/pexels-photo-276517.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "RideOn",
+    category: "Deportes",
+    active: true,
   },
   {
     id: 109,
@@ -70,6 +86,8 @@ const products: Product[] = [
     price: 150,
     image: "https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "BeautyShop",
+    category: "Belleza",
+    active: true,
   },
   {
     id: 110,
@@ -77,6 +95,8 @@ const products: Product[] = [
     price: 780,
     image: "https://images.pexels.com/photos/7915353/pexels-photo-7915353.jpeg?auto=compress&cs=tinysrgb&w=800",
     seller: "GameZone",
+    category: "Tecnología",
+    active: true,
   },
 ];
 

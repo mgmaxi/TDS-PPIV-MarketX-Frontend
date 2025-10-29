@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import { FreeMode } from "swiper/modules";
 
-const categories = [
+export const categories = [
   { name: "Tecnología", image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c" },
   { name: "Textil", image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f" },
   { name: "Alimentos", image: "https://images.unsplash.com/photo-1551218808-94e220e084d2" },
