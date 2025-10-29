@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 
 export default function SignUpPage() {
@@ -103,13 +104,15 @@ export default function SignUpPage() {
           <div className="mt-6 text-center">
             <p className="text-sm">
               ¿Ya tienes cuenta?{" "}
-              <Link href="/auth/login" className="text-blue-600 hover:underline">
+              <Link href="/signin" className="text-blue-600 hover:underline">
                 Inicia sesión aquí
               </Link>
             </p>
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

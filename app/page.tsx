@@ -5,6 +5,7 @@ import ProductCarousel from "@/components/ProductCarousel";
 import RecommendedCarousel from "@/components/RecommendedCarousel";
 import Navbar from "@/components/Navbar";
 import SectionBanner from "@/components/SectionBanner";
+import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
@@ -66,6 +67,8 @@ export default function HomePage() {
         </p>
         <button className="btn-primary px-6 py-3 text-lg">Comenzar ahora</button>
       </section>
+      
+      <Footer />
     </main>
   );
 }
