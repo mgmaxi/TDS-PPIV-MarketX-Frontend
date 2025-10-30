@@ -87,9 +87,15 @@ export default function Navbar() {
                   {menuOpen && (
                     <div className="absolute right-0 w-40 mt-2 bg-white shadow-lg rounded-md p-2">
                       <Link href="/profile" className="block py-1 text-sm text-foreground hover:bg-gray-100">Perfil</Link>
-                      <Link href="/Cart" className="block py-1 text-sm text-foreground hover:bg-gray-100">Mi carrito</Link>
-                      <Link href="/Orders" className="block py-1 text-sm text-foreground hover:bg-gray-100">Mis pedidos</Link>
-                      <Link href="/Checkout" className="block py-1 text-sm text-foreground hover:bg-gray-100">Checkout</Link>
+                      <Link href="/cart" className="block py-1 text-sm text-foreground hover:bg-gray-100">Mi carrito</Link>
+                      <Link href="/orders" className="block py-1 text-sm text-foreground hover:bg-gray-100">Mis pedidos</Link>
+                      <Link href="/checkout" className="block py-1 text-sm text-foreground hover:bg-gray-100">Checkout</Link>
+
+                      <div className="linea-div"></div>
+
+                      <Link href="/dashboard" className="block py-1 text-sm text-foreground hover:bg-gray-100">Dashboard</Link>
+                      <Link href="/products" className="block py-1 text-sm text-foreground hover:bg-gray-100">Productos</Link>
+                      <Link href="/reports" className="block py-1 text-sm text-foreground hover:bg-gray-100">Reportes</Link>
                     </div>
                   )}
                 </div>
