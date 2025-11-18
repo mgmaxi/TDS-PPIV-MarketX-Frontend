@@ -5,12 +5,18 @@ import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { AllProducts, Product } from "@/types/products";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 export default function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const sellerName = "SoundPro";
+  const router = useRouter();
 
   useEffect(() => {
     // Filtramos solo los productos del vendedor elegido
@@ -38,6 +44,22 @@ export default function Catalog() {
   const activos = 2;
   const bajoStock = 3;
 
+
+  const handleDeleteClick = (product: any) => {
+    setSelectedProduct(product);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    setShowDeleteModal(false);
+
+    toast({
+      title: "Producto eliminado",
+      description: selectedProduct?.name,
+      variant: "destructive",
+    });
+  };
+
   return (
     <main className="flex flex-col min-h-screen bg-white text-gray-800">
       <Navbar />
@@ -47,7 +69,7 @@ export default function Catalog() {
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
           <h1 className="text-3xl font-bold">Catálogo de {sellerName}</h1>
           <Link
-            href="/(seller)/products/new"
+            href="/products/new"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition"
           >
             <Plus className="h-5 w-5" /> Agregar Producto
@@ -115,12 +137,23 @@ export default function Catalog() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center flex justify-center gap-3">
-                      <button className="text-blue-500 hover:text-blue-700">
+                      
+                      {/* Editar */}
+                      <button className="text-blue-500 hover:text-blue-700"
+                      onClick={() =>
+                        router.push(
+                          `/products/edit?data=${product.id}}`
+                        )
+                      }>
                         <Edit className="h-5 w-5" />
                       </button>
-                      <button className="text-red-500 hover:text-red-700">
+
+                      {/* Eliminar */}
+                      <button className="text-red-500 hover:text-red-700"
+                      onClick={() => handleDeleteClick(product)}>
                         <Trash2 className="h-5 w-5" />
                       </button>
+
                     </td>
                   </tr>
                 ))}
@@ -136,7 +169,7 @@ export default function Catalog() {
                 Comienza agregando tu primer producto.
               </p>
               <Link
-                href="/(seller)/products/new"
+                href="/products/new"
                 className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition"
               >
                 <Plus className="h-5 w-5" /> Agregar producto
@@ -144,6 +177,38 @@ export default function Catalog() {
             </div>
           )}
         </div>
+
+        {/* Modal de confirmación de eliminación */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full border-t-4 border-primary">
+              <h2 className="text-xl font-bold mb-4 text-gray-800">
+                Confirmar eliminación
+              </h2>
+              <p className="text-gray-600 mb-6">
+                ¿Estás seguro de que deseas eliminar el producto{" "}
+                <span className="font-semibold">{selectedProduct?.name}</span>?  
+                Esta acción no se puede deshacer.
+              </p>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  className="btn-outline"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  className="btn-primary bg-red-600 hover:bg-red-700 border-red-600"
+                  onClick={confirmDelete}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       <Footer />

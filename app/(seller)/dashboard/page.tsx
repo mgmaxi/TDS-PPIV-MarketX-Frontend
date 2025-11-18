@@ -131,7 +131,7 @@ export default function SellerDashboard() {
               Publica nuevos productos, gestiona tu inventario y haz crecer tu negocio en MarketX.
             </p>
             <Link
-              href="/(seller)/products"
+              href="/products/new"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary font-semibold rounded-md hover:bg-gray-100 transition"
             >
               Agregar producto
