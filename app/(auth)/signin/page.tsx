@@ -5,20 +5,30 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { login } from "@/services/authService";
+import axios from "axios";
 
 export default function SignInPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSignIn = (e: React.FormEvent) => { 
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (username === "admin" && password === "1234") {
-      localStorage.setItem("user", JSON.stringify({ username: "ejemplo" }));
+
+    try {
+      const data = await login(email, password);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data));
+
       router.push("/");
-    } else {
-      alert("Credenciales incorrectas");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.mensaje || "Error al iniciar sesión");
+      } else {
+        alert("Error inesperado");
+      }
     }
   };
 
@@ -26,56 +36,59 @@ export default function SignInPage() {
     <main className="min-h-screen bg-background text-foreground">
       <Navbar />
 
-      {/* Hero Section */}
       <section className="bg-gradient-hero py-20 text-center text-white">
         <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">Iniciar sesión</h1>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
+            Iniciar sesión
+          </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">
             Ingresa para continuar explorando los productos de MarketX.
           </p>
         </div>
       </section>
 
-      {/* Formulario de Sign In */}
       <section className="py-16">
         <div className="container mx-auto px-6">
-          <form onSubmit={handleSignIn} className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto border-t-4 border-primary">
+          <form
+            onSubmit={handleSignIn}
+            className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto border-t-4 border-primary"
+          >
             <div className="mb-6">
-              <label htmlFor="username" className="block text-sm font-semibold text-foreground mb-2">Usuario</label>
+              <label className="block text-sm font-semibold mb-2">Email</label>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Escribe tu usuario"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Ingresa tu email"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
             </div>
+
             <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-semibold text-foreground mb-2">Contraseña</label>
+              <label className="block text-sm font-semibold mb-2">
+                Contraseña
+              </label>
               <input
                 type="password"
-                id="password"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Escribe tu contraseña"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
             </div>
+
             <button type="submit" className="btn-primary w-full py-3">
               Iniciar sesión
             </button>
           </form>
 
-          {/* Enlace para redirigir al registro */}
           <div className="mt-6 text-center">
             <p className="text-sm">
-              ¿No tienes cuenta?{" "}
+              ¿No tienes cuenta?
               <Link href="/signup" className="text-blue-600 hover:underline">
+                {" "}
                 Regístrate aquí
               </Link>
             </p>
