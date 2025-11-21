@@ -3,61 +3,125 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
-import { AllProducts, Product } from "@/types/products";
-import { Plus, Edit, Trash2, Package } from "lucide-react";
+import { Plus, Edit, Trash2, Package, Loader2 } from "lucide-react"; 
 import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Catalog() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const router = useRouter();
+  
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sellerName, setSellerName] = useState(""); 
+  
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const sellerName = "SoundPro";
-  const router = useRouter();
-
+  // 1. Cargar Usuario y Productos al iniciar
   useEffect(() => {
-    // Filtramos solo los productos del vendedor elegido
-    let sellerProducts = AllProducts.filter((p) => p.seller === sellerName);
+    const storedUser = localStorage.getItem("user");
 
-    // Agregamos un producto inactivo de ejemplo
-    sellerProducts = [
-      ...sellerProducts,
-      {
-        id: "inactivo-1",
-        name: "Micrófono profesional inactivo",
-        price: 250,
-        image: "https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&cs=tinysrgb&w=600",
-        seller: sellerName,
-        category: "Tecnología",
-        stock: 0,
-        active: false,
-      },
-    ];
+    if (!storedUser) {
+      toast({ title: "Acceso denegado", description: "Inicia sesión para ver tu catálogo.", variant: "destructive" });
+      router.push("/signin");
+      return;
+    }
 
-    setProducts(sellerProducts);
-  }, []);
+    try {
+      const user = JSON.parse(storedUser);
+      
+      // Seteamos nombre para la UI
+      setSellerName(user.nombre || user.username || "Vendedor");
 
-  const total = 3;
-  const activos = 2;
-  const bajoStock = 3;
+      // Obtenemos el ID (Mongo usa _id)
+      const userId = user._id || user.id;
 
+      if (userId) {
+        fetchProducts(userId);
+      } else {
+        console.error("Usuario sin ID válido");
+        setIsLoading(false);
+      }
+
+    } catch (error) {
+      console.error("Error al leer usuario", error);
+      router.push("/signin");
+    }
+  }, [router]);
+
+
+  // 2. Fetch dinámico con el ID
+  const fetchProducts = async (userId: string) => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${API_URL}/products?vendedor=${userId}`);
+      
+      if (!res.ok) throw new Error("Error al cargar productos");
+      
+      const data = await res.json();
+      
+      setProducts(data.productos || data || []); 
+      
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar los productos.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Cálculos basados en los datos recibidos 
+  const total = products.length;
+  const activos = products.filter((p) => p.activo).length;
+  const bajoStock = products.filter((p) => (p.stock ?? 0) < 5).length; 
 
   const handleDeleteClick = (product: any) => {
     setSelectedProduct(product);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    setShowDeleteModal(false);
+  // 3. Eliminar producto
+  const confirmDelete = async () => {
+    if (!selectedProduct) return;
 
-    toast({
-      title: "Producto eliminado",
-      description: selectedProduct?.name,
-      variant: "destructive",
-    });
+    const token = localStorage.getItem("token");
+
+    try {
+      const prodId = selectedProduct._id || selectedProduct.id;
+
+      const res = await fetch(`${API_URL}/products/${prodId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}` 
+        }
+      });
+
+      if (!res.ok) throw new Error("Error al eliminar");
+
+      setProducts(products.filter((p) => (p._id || p.id) !== prodId));
+      
+      toast({
+        title: "Producto eliminado",
+        description: selectedProduct.nombre, 
+        className: "bg-green-600 text-white", 
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el producto.",
+        variant: "destructive",
+      });
+    } finally {
+      setShowDeleteModal(false);
+    }
   };
 
   return (
@@ -80,21 +144,33 @@ export default function Catalog() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
           <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-primary text-center">
             <h3 className="text-lg font-semibold mb-1">Total productos</h3>
-            <p className="text-3xl font-bold text-primary">{total}</p>
+            <p className="text-3xl font-bold text-primary">
+                {isLoading ? "..." : total}
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500 text-center">
             <h3 className="text-lg font-semibold mb-1">Activos</h3>
-            <p className="text-3xl font-bold text-green-500">{activos}</p>
+            <p className="text-3xl font-bold text-green-500">
+                {isLoading ? "..." : activos}
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-500 text-center">
             <h3 className="text-lg font-semibold mb-1">Stock bajo</h3>
-            <p className="text-3xl font-bold text-yellow-500">{bajoStock}</p>
+            <p className="text-3xl font-bold text-yellow-500">
+                {isLoading ? "..." : bajoStock}
+            </p>
           </div>
         </div>
 
-        {/* Tabla de productos */}
-        <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-          {products.length > 0 ? (
+        {/* Tabla */}
+        <div className="overflow-x-auto bg-white rounded-lg shadow-md min-h-[300px]">
+          
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                <Loader2 className="h-10 w-10 animate-spin mb-4 text-primary" />
+                <p>Cargando catálogo...</p>
+            </div>
+          ) : products.length > 0 ? (
             <table className="w-full table-auto border-collapse">
               <thead className="bg-gray-100 text-left">
                 <tr>
@@ -109,51 +185,54 @@ export default function Catalog() {
               <tbody>
                 {products.map((product) => (
                   <tr
-                    key={product.id}
+                    key={product._id || product.id}
                     className={`hover:bg-gray-50 transition border-b ${
-                      product.active === false ? "opacity-50" : ""
+                      product.activo === false ? "opacity-50" : ""
                     }`}
                   >
                     <td className="px-4 py-3 flex items-center gap-3">
                       <img
-                        src={product.image}
-                        alt={product.name}
+                        src={product.imagen || "/placeholder.png"} 
+                        alt={product.nombre}
                         className="w-12 h-12 rounded object-cover border"
+                        onError={(e) => e.currentTarget.src = "https://placehold.co/100?text=No+Img"}
                       />
-                      <span>{product.name}</span>
+                      <span>{product.nombre}</span>
                     </td>
-                    <td className="px-4 py-3">{product.category}</td>
-                    <td className="px-4 py-3">${product.price.toFixed(2)}</td>
+                    
+                    <td className="px-4 py-3">{product.categoria}</td>
+                    
+                    <td className="px-4 py-3">${Number(product.precio).toFixed(2)}</td>
+                    
                     <td className="px-4 py-3">{product.stock ?? "-"}</td>
+                    
                     <td className="px-4 py-2">
                       <span
                         className={`px-2 py-1 rounded-full text-sm font-medium ${
-                          product.active === true
+                          product.activo
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {product.active ? "Activo" : "Inactivo"}
+                        {product.activo ? "Activo" : "Inactivo"}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center flex justify-center gap-3">
-                      
-                      {/* Editar */}
-                      <button className="text-blue-500 hover:text-blue-700"
-                      onClick={() =>
-                        router.push(
-                          `/products/edit?data=${product.id}}`
-                        )
-                      }>
+                      <button
+                        className="text-blue-500 hover:text-blue-700"
+                        onClick={() =>
+                          router.push(`/products/edit?id=${product._id || product.id}`)
+                        }
+                      >
                         <Edit className="h-5 w-5" />
                       </button>
 
-                      {/* Eliminar */}
-                      <button className="text-red-500 hover:text-red-700"
-                      onClick={() => handleDeleteClick(product)}>
+                      <button
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleDeleteClick(product)}
+                      >
                         <Trash2 className="h-5 w-5" />
                       </button>
-
                     </td>
                   </tr>
                 ))}
@@ -178,7 +257,6 @@ export default function Catalog() {
           )}
         </div>
 
-        {/* Modal de confirmación de eliminación */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full border-t-4 border-primary">
@@ -187,20 +265,20 @@ export default function Catalog() {
               </h2>
               <p className="text-gray-600 mb-6">
                 ¿Estás seguro de que deseas eliminar el producto{" "}
-                <span className="font-semibold">{selectedProduct?.name}</span>?  
+                <span className="font-semibold">{selectedProduct?.nombre}</span>?  
                 Esta acción no se puede deshacer.
               </p>
 
               <div className="flex justify-end gap-3">
                 <button
-                  className="btn-outline"
+                  className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100"
                   onClick={() => setShowDeleteModal(false)}
                 >
                   Cancelar
                 </button>
 
                 <button
-                  className="btn-primary bg-red-600 hover:bg-red-700 border-red-600"
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                   onClick={confirmDelete}
                 >
                   Eliminar
