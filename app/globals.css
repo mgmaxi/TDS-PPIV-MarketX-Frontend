@@ -136,3 +136,7 @@ form:focus-within {
     background-color: #0000005f; 
     margin: 20px 0; 
 }
+
+.item-mobile-menu {
+  @apply text-base font-medium text-foreground hover:bg-primary/10 rounded-md p-2 transition-all border-l-4 border border-primary/70 bg-gray-50;
+}

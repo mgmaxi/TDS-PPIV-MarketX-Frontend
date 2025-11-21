@@ -2,7 +2,17 @@ import { api } from "@/lib/api";
 
 export async function login(email: string, password: string) {
   const { data } = await api.post("/users/login", { email, password });
-  return data;
+
+  const user = {
+    _id: data._id,
+    nombre: data.nombre,
+    email: data.email,
+    rol: data.rol,
+  };
+
+  const token = data.token;
+
+  return { user, token };
 }
 
 export async function register(nombre: string, email: string, password: string) {
@@ -12,5 +22,15 @@ export async function register(nombre: string, email: string, password: string) 
     password,
     rol: "cliente",
   });
-  return data;
+
+  const user = {
+    _id: data._id,
+    nombre: data.nombre,
+    email: data.email,
+    rol: data.rol,
+  };
+
+  const token = data.token;
+
+  return { user, token };
 }

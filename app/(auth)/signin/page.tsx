@@ -5,22 +5,23 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login } from "@/services/authService";
+import { login as loginService } from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const data = await login(email, password);
+      const { user, token } = await loginService(email, password);
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
+      login({ user, token });
 
       router.push("/");
     } catch (error: unknown) {

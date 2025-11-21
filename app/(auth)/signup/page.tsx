@@ -4,7 +4,8 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { register } from "@/services/authService";
+import { register as registerService } from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +16,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,10 +27,9 @@ export default function SignUpPage() {
     }
 
     try {
-      const data = await register(username, email, password);
+      const { user, token } = await registerService(username, email, password);
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
+      login({ user, token });
 
       alert("¡Registro exitoso!");
       router.push("/");
