@@ -1,11 +1,11 @@
 "use client";
 
-import CategoryCarousel from "@/components/CategoryCarousel";
-import ProductCarousel from "@/components/ProductCarousel";
-import RecommendedCarousel from "@/components/RecommendedCarousel";
 import Navbar from "@/components/Navbar";
-import SectionBanner from "@/components/SectionBanner";
 import Footer from "@/components/Footer";
+import SectionBanner from "@/components/SectionBanner";
+import CategoryCarousel from "@/components/CategoryCarousel";
+import ProductCarousel from "@/components/ProductCarousel"; 
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -32,19 +32,22 @@ export default function HomePage() {
       </section>
 
       {/* Banner 1 */}
-     <SectionBanner
-        image="https://images.pexels.com/photos/4158/apple-iphone-smartphone-desk.jpg?_gl=1*7u64ar*_ga*MzY0Mzc4ODYwLjE3NDg3OTA0MDM.*_ga_8JE65Q40S6*czE3NjAzMDE5MTUkbzQkZzEkdDE3NjAzMDE5ODkkajYwJGwwJGgw"
+      <SectionBanner
+        image="https://images.pexels.com/photos/4158/apple-iphone-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         title="Los más vendidos del mes"
         subtitle="Descubrí los productos favoritos de nuestros clientes"
       />
 
-      {/* Carousel */}
-      <section className="py-16">
+      {/* CAROUSEL 1: DESTACADOS (NOVEDADES) */}
+      <div className="bg-white border-b py-4">
         <div className="container mx-auto px-6">
-          <h2 className="text-2xl font-bold mb-6 text-foreground">Destacados</h2>
-          <ProductCarousel />
+          <ProductCarousel 
+            title="Novedades" 
+            query="sort=-createdAt&limit=8" 
+            linkHref="/search?sort=-createdAt&activo=true"
+          />
         </div>
-      </section>
+      </div>
 
       <SectionBanner
         image="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80"
@@ -52,12 +55,26 @@ export default function HomePage() {
         subtitle="Seleccionados según tus intereses y búsquedas recientes"
       />
 
-      {/* Recommended */}
-      <section className="py-16 bg-secondary/30">
+      {/* CAROUSEL 2: OPORTUNIDADES (PRECIO BAJO) */}
+      <section className="bg-secondary/30 border-b py-4">
         <div className="container mx-auto px-6">
-          <RecommendedCarousel />
+          <ProductCarousel 
+            title="Oportunidades" 
+            query="sort=precio&limit=8" 
+            linkHref="/search?sort=price&activo=true"
+          />
         </div>
       </section>
+
+      {/* CAROUSEL 3: ÚLTIMAS UNIDADES */}
+      <div className="bg-white py-12">
+        <div className="container mx-auto px-6">
+          <ProductCarousel 
+            title="¡Se están agotando!" 
+            query="stockMax=5&limit=8" 
+          />
+        </div>
+      </div>
 
       {/* CTA final */}
       <section className="bg-gradient-hero py-20 text-center text-white">
@@ -65,7 +82,11 @@ export default function HomePage() {
         <p className="text-white/90 mb-6">
           Únete a miles de PYMEs que confían en MarketX.
         </p>
-        <button className="btn-primary px-6 py-3 text-lg">Comenzar ahora</button>
+          <Link href="/signup">
+              <button className="relative z-10 btn-primary px-8 py-3 text-lg shadow-lg shadow-black/20 border-white/20 border transition">
+                  Comenzar ahora
+              </button>
+          </Link>
       </section>
       
       <Footer />

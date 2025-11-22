@@ -1,149 +1,114 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import Slider from "react-slick";
-import ProductCard from "./ProductCard";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Íconos de flechas
+import { ChevronLeft, ChevronRight, Loader2, ArrowRight } from "lucide-react";
+import ProductCard from "@/components/ProductCard";
 
-export const mockProducts = [
-  {
-    id: 1,
-    name: "Auriculares Bluetooth Sony WH-1000XM5",
-    price: 420,
-    image: "https://images.pexels.com/photos/3394651/pexels-photo-3394651.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "SoundPro",
-    category: "Tecnología",
-    active: true,
-  },
-  {
-    id: 2,
-    name: "Smartphone Samsung Galaxy S24",
-    price: 1100,
-    image: "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "MobileCenter",
-    category: "Tecnología",
-    active: true,
-  },
-  {
-    id: 3,
-    name: "Zapatillas Nike Air Zoom Pegasus",
-    price: 160,
-    image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "UrbanStyle",
-    category: "Textil",
-    active: true,
-  },
-  {
-    id: 4,
-    name: "Reloj inteligente Apple Watch Series 9",
-    price: 530,
-    image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "TimeStore",
-    category: "Tecnología",
-    active: true,
-  },
-  {
-    id: 5,
-    name: "Cámara réflex Canon EOS 90D",
-    price: 950,
-    image: "https://images.pexels.com/photos/212372/pexels-photo-212372.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "FotoPro",
-    category: "Tecnología",
-    active: true,
-  },
-  {
-    id: 6,
-    name: "Cafetera Nespresso Inissia",
-    price: 120,
-    image: "https://images.pexels.com/photos/585754/pexels-photo-585754.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "HomeCafe",
-    category: "Hogar",
-    active: true,
-  },
-  {
-    id: 7,
-    name: "Mochila North Face Borealis",
-    price: 95,
-    image: "https://images.pexels.com/photos/442956/pexels-photo-442956.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "AdventureGear",
-    category: "Textil",
-    active: true,
-  },
-  {
-    id: 8,
-    name: "Lámpara de escritorio LED minimalista",
-    price: 45,
-    image: "https://images.pexels.com/photos/8092352/pexels-photo-8092352.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "DecoLight",
-    category: "Hogar",
-    active: true,
-  },
-  {
-    id: 9,
-    name: "Teclado mecánico Logitech MX",
-    price: 150,
-    image: "https://images.pexels.com/photos/3829227/pexels-photo-3829227.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "TechZone",
-    category: "Tecnología",
-    active: true,
-  },
-  {
-    id: 10,
-    name: "Botella térmica de acero inoxidable",
-    price: 25,
-    image: "https://images.pexels.com/photos/3737696/pexels-photo-3737696.jpeg?auto=compress&cs=tinysrgb&w=600",
-    seller: "EcoLife",
-    category: "Tecnología",
-    active: true,
-  },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
-// 🔹 Flechas personalizadas
-const ArrowButton = ({
-  onClick,
-  direction,
-}: {
-  onClick?: () => void;
-  direction: "left" | "right";
-}) => (
+interface CarouselProps {
+  title: string;
+  query?: string;
+  linkHref?: string;
+}
+
+const ArrowButton = ({ onClick, direction }: { onClick?: () => void; direction: "left" | "right" }) => (
   <button
     onClick={onClick}
-    className={`absolute top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm shadow-md rounded-full p-2 transition-all hover:bg-gray-100 hover:scale-105 ${
-      direction === "left" ? "left-2" : "right-2"
+    className={`absolute top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg border border-gray-100 rounded-full p-2 text-gray-700 transition-all hover:bg-primary hover:text-white hover:scale-110 flex items-center justify-center ${
+      direction === "left" ? "-left-2 md:-left-5" : "-right-2 md:-right-5"
     }`}
+    style={{ width: "40px", height: "40px" }}
     aria-label={direction === "left" ? "Anterior" : "Siguiente"}
   >
-    {direction === "left" ? (
-      <ChevronLeft className="w-5 h-5 text-gray-800" />
-    ) : (
-      <ChevronRight className="w-5 h-5 text-gray-800" />
-    )}
+    {direction === "left" ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
   </button>
 );
 
-export default function ProductCarousel() {
+export default function ProductCarousel({ title, query = "", linkHref }: CarouselProps) {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const cleanQuery = query.startsWith('?') ? query.substring(1) : query;
+        const url = `${API_URL}/products?${cleanQuery}&activo=true`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+        setProducts(data.productos || (Array.isArray(data) ? data : []));
+      } catch (error) {
+        console.error("Error loading carousel:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [query]);
+
+  // Configuración de React Slick
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: products.length > 4, // Solo infinito si hay suficientes productos
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <ArrowButton direction="right" />,
     prevArrow: <ArrowButton direction="left" />,
+    autoplay: false,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 640, settings: { slidesToShow: 1 } },
+      {
+        breakpoint: 1280,
+        settings: { slidesToShow: 3 },
+      },
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 640,
+        settings: { slidesToShow: 1, centerMode: false }, 
+      },
     ],
   };
 
+  if (loading) {
+    return (
+      <div className="py-12 flex justify-center w-full">
+        <Loader2 className="animate-spin text-primary h-8 w-8" />
+      </div>
+    );
+  }
+
+  if (products.length === 0) return null;
+
   return (
-    <div className="relative my-10">
-      <Slider {...settings}>
-        {mockProducts.map((product) => (
-          <div key={product.id} className="px-3">
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </Slider>
-    </div>
+    <section className="w-full py-8">
+      <div className="flex justify-between items-end mb-6 px-2">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h2>
+        {linkHref && (
+          <Link 
+            href={linkHref} 
+            className="text-primary font-medium flex items-center hover:underline text-sm group"
+          >
+            Ver todos <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        )}
+      </div>
+
+      <div className="relative px-2 md:px-4">
+        <Slider {...settings}>
+          {products.map((product) => (
+            <div key={product._id || product.id} className="px-3 py-2 h-full">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </section>
   );
 }

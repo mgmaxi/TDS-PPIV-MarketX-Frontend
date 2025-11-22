@@ -7,6 +7,14 @@ import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
+const NAV_LINKS = [
+  { name: "Categorías", href: "/catalog" }, 
+  { name: "Novedades", href: "/search?sort=-createdAt&activo=true" },
+  { name: "Tecnología", href: "/search?categoria=Tecnología&activo=true" },
+  { name: "Hogar", href: "/search?categoria=Hogar&activo=true" },
+  { name: "Sobre nosotros", href: "/about" },
+];
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,14 +45,20 @@ export default function Navbar() {
              <SearchBar />
           </div>
 
-          {/* 3. Navegación Desktop */}
+          {/* 3. Navegación Desktop  */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/catalog" className="hover:text-primary transition-colors">Categorías</Link>
-            <Link href="/sale" className="hover:text-primary transition-colors">Ofertas</Link>
-            <Link href="/technologie" className="hover:text-primary transition-colors">Tecnología</Link>
+            {NAV_LINKS.map((link) => (
+              <Link 
+                key={link.name}
+                href={link.href} 
+                className="hover:text-primary transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
 
-          {/* 4. Acciones de Usuario */}
+          {/* 4. Acciones de Usuario  */}
           <div className="flex items-center gap-3">
             
             {!isAuthenticated ? (
@@ -62,7 +76,7 @@ export default function Navbar() {
                 </Link>
               </div>
             ) : (
-              // Estado: LOGUEADO (Dropdown Menu)
+              // Estado: LOGUEADO 
               <div className="relative hidden md:block">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
@@ -99,7 +113,7 @@ export default function Navbar() {
                         <DropdownLink href="/checkout" icon={CreditCard} onClick={() => setMenuOpen(false)}>Checkout</DropdownLink>
                       </div>
 
-                      {/* Sección Vendedor (Condicional) */}
+                      {/* Sección Vendedor */}
                       {isSeller && (
                         <>
                           <div className="border-t border-gray-100 my-1 mx-4" />
@@ -140,7 +154,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Menú Móvil (Overlay Completo) */}
+      {/* Menú Móvil  */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 bg-white md:hidden flex flex-col animate-in slide-in-from-right duration-300">
             
@@ -165,9 +179,11 @@ export default function Navbar() {
                 {/* Navegación Principal */}
                 <div className="flex flex-col gap-1">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Navegación</p>
-                    <MobileLink href="/catalog" onClick={() => setMobileMenuOpen(false)}>Categorías</MobileLink>
-                    <MobileLink href="/sale" onClick={() => setMobileMenuOpen(false)}>Ofertas</MobileLink>
-                    <MobileLink href="/technologie" onClick={() => setMobileMenuOpen(false)}>Tecnología</MobileLink>
+                    {NAV_LINKS.map((link) => (
+                      <MobileLink key={link.name} href={link.href} onClick={() => setMobileMenuOpen(false)}>
+                        {link.name}
+                      </MobileLink>
+                    ))}
                 </div>
 
                 {isAuthenticated ? (
@@ -183,7 +199,7 @@ export default function Navbar() {
                             <div className="flex flex-col gap-1">
                                 <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-2">Panel Vendedor</p>
                                 <MobileLink href="/dashboard" icon={LayoutDashboard} onClick={() => setMobileMenuOpen(false)}>Dashboard</MobileLink>
-                                <MobileLink href="/products" icon={Package} onClick={() => setMobileMenuOpen(false)}>Productos</MobileLink>
+                                <MobileLink href="/catalog" icon={Package} onClick={() => setMobileMenuOpen(false)}>Mis Productos</MobileLink>
                                 <MobileLink href="/reports" icon={FileText} onClick={() => setMobileMenuOpen(false)}>Reportes</MobileLink>
                             </div>
                         )}
