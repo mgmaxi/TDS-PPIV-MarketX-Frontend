@@ -5,12 +5,15 @@ import { Button } from "@/components/ui/button";
 import { 
   ShoppingBag, Menu, LogOut, User, Package, LayoutDashboard, 
   FileText, ShoppingCart, CreditCard, ChevronDown, X, 
-  Sparkles, Laptop, Armchair, Info, LayoutGrid 
+  Sparkles, Laptop, Armchair, Info, LayoutGrid, 
+  Plus
 } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/cartContext"; 
+import Catalog from "@/app/(seller)/products/page";
+import CatalogPage from "@/app/(public)/catalog/page";
 
 const NAV_LINKS = [
   { name: "Categorías", href: "/search", icon: LayoutGrid },
@@ -122,7 +125,7 @@ export default function Navbar() {
 
                       <div className="py-2">
                         <DropdownLink href="/profile" icon={User} onClick={() => setMenuOpen(false)}>Mi Perfil</DropdownLink>
-                        {/* Quitamos Mi Carrito de aquí porque ya tiene botón propio, o lo dejamos como acceso extra */}
+                        <DropdownLink href="/cart" icon={ShoppingCart} onClick={() => setMenuOpen(false)}>Mi Carrito</DropdownLink>
                         <DropdownLink href="/orders" icon={Package} onClick={() => setMenuOpen(false)}>Mis Pedidos</DropdownLink>
                       </div>
 
@@ -133,8 +136,8 @@ export default function Navbar() {
                             <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mt-2 mb-1">Panel Vendedor</p>
                           </div>
                           <DropdownLink href="/dashboard" icon={LayoutDashboard} onClick={() => setMenuOpen(false)}>Dashboard</DropdownLink>
-                          <DropdownLink href="/catalog" icon={Package} onClick={() => setMenuOpen(false)}>Mis Productos</DropdownLink>
-                          <DropdownLink href="/products/new" icon={Package} onClick={() => setMenuOpen(false)}>Publicar Producto</DropdownLink>
+                          <DropdownLink href="/products" icon={Package} onClick={() => setMenuOpen(false)}>Mis Productos</DropdownLink>
+                          <DropdownLink href="/products/new" icon={Plus} onClick={() => setMenuOpen(false)}>Publicar Producto</DropdownLink>
                         </>
                       )}
 
