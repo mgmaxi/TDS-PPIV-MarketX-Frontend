@@ -1,27 +1,37 @@
-"use client";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/context/AuthContext";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+// 1. Importa los proveedores
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/cartContext"; 
+// Estilos globales
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const queryClient = new QueryClient();
+const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const metadata: Metadata = {
+  title: "MarketX",
+  description: "Marketplace B2B/B2C",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="es">
-      <body>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              {children}
-            </TooltipProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+      <body className={inter.className}>
+        {/* 2. AuthProvider envuelve todo */}
+        <AuthProvider>
+          {/* 3. CartProvider envuelve a children y está DENTRO de Auth */}
+          <CartProvider>
+            {children}
+            <Toaster />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

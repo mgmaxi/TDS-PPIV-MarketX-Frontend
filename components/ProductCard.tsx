@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { ShoppingCart, Loader2 } from "lucide-react";
+import { useCart } from "@/context/cartContext";
+import { useState } from "react";
 
 interface ProductProps {
   _id?: string;
@@ -16,17 +17,21 @@ interface ProductProps {
 }
 
 export default function ProductCard({ product }: { product: ProductProps }) {
+  const { addToCart } = useCart(); // <--- 2. Sacamos la función
+  const [isAdding, setIsAdding] = useState(false); // Estado local para feedback visual
+
   const productId = product._id || product.id;
 
-  const handleQuickAdd = (e: React.MouseEvent) => {
+  const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    toast({
-      title: "Agregado al carrito",
-      description: `${product.nombre} añadido.`,
-      className: "bg-green-600 text-white",
-    });
+    if (isAdding) return;
+
+    setIsAdding(true);
+    // Llamamos al contexto (que ya maneja el fetch al back y el toast)
+    await addToCart(product); 
+    setIsAdding(false);
   };
 
   if (!productId) return null;
@@ -68,14 +73,18 @@ export default function ProductCard({ product }: { product: ProductProps }) {
             </span>
           </div>
 
-          {/* 3. Agrega al carrito */}
+          {/* Botón Agregar */}
           <button
             onClick={handleQuickAdd}
-            disabled={(product.stock ?? 0) < 1}
-            className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed z-20 shadow-sm"
+            disabled={(product.stock ?? 0) < 1 || isAdding}
+            className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed z-20 shadow-sm active:scale-95"
             title="Agregar al carrito"
           >
-            <ShoppingCart className="h-5 w-5" />
+            {isAdding ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+                <ShoppingCart className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>

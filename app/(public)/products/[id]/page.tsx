@@ -1,25 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation"; // Hook vital para leer la carpeta [id]
+import { useParams } from "next/navigation"; 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ShoppingCart, ArrowLeft, Truck, ShieldCheck, Share2, Loader2, CreditCard, Store } from "lucide-react";
 import Link from "next/link";
-import { toast } from "@/components/ui/use-toast";
+import { useCart } from "@/context/cartContext"; 
 
-// URL de tu API
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
 export default function ProductDetailPage() {
-  // 1. Obtenemos el ID de la URL (ej: /products/65abc...)
   const params = useParams();
   const { id } = params; 
+
+  // 2. HOOKS DEL CARRITO
+  const { addToCart } = useCart(); 
+  const [isAdding, setIsAdding] = useState(false); 
 
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 2. Fetch del producto al montar el componente
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -42,16 +43,16 @@ export default function ProductDetailPage() {
     if (id) fetchProduct();
   }, [id]);
 
-  // Lógica simulada de carrito (Hasta que tengamos el Context)
-  const handleAddToCart = () => {
-    toast({
-      title: "¡Agregado al carrito!",
-      description: `${product.nombre} se añadió a tu compra.`,
-      className: "bg-green-600 text-white",
-    });
+  // 3. FUNCIÓN aGREGAR AL CARRITO
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    setIsAdding(true); 
+    await addToCart(product, 1); 
+    setIsAdding(false); 
   };
 
-  // 3. Renderizado Condicional (Carga)
+  // Renderizado de Carga
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
@@ -63,7 +64,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  // 4. Renderizado Condicional (No encontrado)
+  // Renderizado No Encontrado
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -80,14 +81,13 @@ export default function ProductDetailPage() {
     );
   }
 
-  // 5. Vista Principal del Producto
+  // Vista Principal
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
       <div className="container mx-auto px-4 py-8 flex-1">
         
-        {/* Breadcrumb / Botón Volver */}
         <Link 
             href="/search" 
             className="inline-flex items-center text-sm text-gray-500 hover:text-primary mb-6 transition-colors font-medium"
@@ -98,7 +98,7 @@ export default function ProductDetailPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8">
             
-            {/* --- COLUMNA IZQUIERDA: IMAGEN --- */}
+            {/* --- IMAGEN --- */}
             <div className="bg-gray-100/50 aspect-square md:aspect-auto relative flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-100">
               <img 
                 src={product.imagen || "/placeholder.png"} 
@@ -108,10 +108,9 @@ export default function ProductDetailPage() {
               />
             </div>
 
-            {/* --- COLUMNA DERECHA: INFO --- */}
+            {/* --- INFO --- */}
             <div className="p-6 md:p-10 flex flex-col h-full">
               
-              {/* Cabecera */}
               <div className="mb-4">
                 <div className="flex justify-between items-start">
                     <span className="text-xs font-bold tracking-wider text-primary uppercase bg-primary/10 px-3 py-1 rounded-full">
@@ -134,7 +133,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Precio y Cuotas */}
               <div className="my-6 border-t border-b border-gray-100 py-6">
                 <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold text-gray-900">
@@ -148,7 +146,6 @@ export default function ProductDetailPage() {
                 </p>
               </div>
 
-              {/* Descripción */}
               <div className="mb-8 flex-1">
                 <h3 className="font-semibold text-gray-900 mb-2">Lo que tienes que saber de este producto</h3>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm md:text-base">
@@ -156,27 +153,34 @@ export default function ProductDetailPage() {
                 </p>
               </div>
 
-              {/* Stock y Botones */}
               <div className="mt-auto flex flex-col gap-5">
                 
-                {/* Indicador de Stock */}
                 <div className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-red-600"} flex items-center gap-2`}>
                     <div className={`w-2 h-2 rounded-full ${product.stock > 0 ? "bg-green-600" : "bg-red-600"}`}></div>
                     {product.stock > 0 ? `Stock disponible (${product.stock})` : "Sin stock disponible"}
                 </div>
 
                 <div className="flex gap-4 flex-col sm:flex-row">
+                    {/* 4. BOTÓN CONECTADO */}
                     <button 
                         onClick={handleAddToCart}
-                        disabled={!product.activo || product.stock < 1}
+                        disabled={!product.activo || product.stock < 1 || isAdding} // Deshabilitar si carga o no hay stock
                         className="flex-1 bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98]"
                     >
-                        <ShoppingCart className="h-5 w-5" />
-                        {product.stock > 0 ? "Agregar al carrito" : "Agotado"}
+                        {isAdding ? (
+                            <>
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                                Agregando...
+                            </>
+                        ) : (
+                            <>
+                                <ShoppingCart className="h-6 w-6" />
+                                {product.stock > 0 ? "Agregar al carrito" : "Agotado"}
+                            </>
+                        )}
                     </button>
                 </div>
                 
-                {/* Sellos de confianza */}
                 <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-gray-500">
                     <div className="flex items-center gap-2">
                         <Truck className="h-4 w-4 text-green-500" />
