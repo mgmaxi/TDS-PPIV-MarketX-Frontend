@@ -23,8 +23,8 @@ export default function HomePage() {
             El marketplace líder para potenciar tu negocio con los mejores proveedores.
           </p>
           <Link href="/search">
-            <button className="relative z-10 btn-primary bg-white text-primary px-8 py-3 text-lg shadow-lg shadow-black/20 border-white/20 border transition hover:bg-gray-100 hover:scale-105 font-bold rounded-full">
-                Explorar Catálogo
+            <button className="relative z-10 btn-primary bg-white text-primary px-8 py-3 text-lg shadow-lg shadow-black/20 border-white/20 border transition  hover:scale-105 font-bold rounded-full">
+                Explorar catálogo
             </button>
           </Link>
         </div>
@@ -165,11 +165,10 @@ export default function HomePage() {
            Únete a miles de PyMEs que confían en MarketX.
             </p>
             <Link href="/signup">
-                <button className="btn-primary bg-white text-primary px-10 py-4 text-lg shadow-2xl border-white/20 border transition hover:bg-gray-50 hover:shadow-white/20 font-bold rounded-xl">
+                <button className="btn-primary bg-white text-primary px-10 py-4 text-lg shadow-2xl border-white/20 border transition hover:shadow-white/20 font-bold rounded-xl">
                     Regístrate
                 </button>
             </Link>
-            <p className="mt-4 text-sm text-white/60">No se requiere tarjeta de crédito para empezar.</p>
         </div>
       </section>
       
