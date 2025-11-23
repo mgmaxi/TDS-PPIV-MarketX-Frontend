@@ -57,7 +57,7 @@ export default function Catalog() {
   const fetchProducts = async (userId: string) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_URL}/products?vendedor=${userId}`);
+      const res = await fetch(`${API_URL}/products?vendedor=${userId}&limit=100`);
       
       if (!res.ok) throw new Error("Error al cargar productos");
       
