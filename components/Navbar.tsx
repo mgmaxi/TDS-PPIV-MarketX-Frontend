@@ -16,7 +16,7 @@ import Catalog from "@/app/(seller)/products/page";
 import CatalogPage from "@/app/(public)/catalog/page";
 
 const NAV_LINKS = [
-  { name: "Categorías", href: "/search", icon: LayoutGrid },
+  { name: "Catalogo", href: "/catalog", icon: LayoutGrid },
   { name: "Novedades", href: "/search?sort=-createdAt&activo=true", icon: Sparkles },
   { name: "Tecnología", href: "/search?categoria=Tecnología&activo=true", icon: Laptop },
   { name: "Hogar", href: "/search?categoria=Hogar&activo=true", icon: Armchair },
@@ -209,8 +209,9 @@ export default function Navbar() {
                         {isSeller && (
                             <div className="flex flex-col gap-1">
                                 <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-2">Vendedor</p>
-                                <MobileLink href="/catalog" icon={LayoutDashboard} onClick={() => setMobileMenuOpen(false)}>Gestionar Catálogo</MobileLink>
-                                <MobileLink href="/products/new" icon={Package} onClick={() => setMobileMenuOpen(false)}>Publicar</MobileLink>
+                                <DropdownLink href="/dashboard" icon={LayoutDashboard} onClick={() => setMenuOpen(false)}>Dashboard</DropdownLink>
+                          <DropdownLink href="/products" icon={Package} onClick={() => setMenuOpen(false)}>Mis Productos</DropdownLink>
+                          <DropdownLink href="/products/new" icon={Plus} onClick={() => setMenuOpen(false)}>Publicar Producto</DropdownLink>
                             </div>
                         )}
 
